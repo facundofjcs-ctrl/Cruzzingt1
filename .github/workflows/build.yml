@@ -5,14 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: unzip cruzzingt.zip
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - run: chmod +x cruzzingt/gradlew
-      - run: cd cruzzingt && ./gradlew assembleDebug
+      - name: Unzip and Build
+        run: |
+          unzip -o cruzzingt.zip
+          GRADLEW=$(find . -name gradlew | head -n 1)
+          chmod +x $GRADLEW
+          DIR=$(dirname $GRADLEW)
+          cd $DIR
+          ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: cruzzingt-apk
-          path: cruzzingt/app/build/outputs/apk/debug/app-debug.apk
+          path: "**/app-debug.apk"
